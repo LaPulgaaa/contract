@@ -2,19 +2,20 @@
 
 pragma solidity ^0.8.24;
 
-struct Voter{
+
+contract Election {
+
+    struct Voter{
     address votaddr;
     bool voted;
     address votedto;
-}
+    }
 
-struct Candidate {
-    address candadr;
-    string name;
-    uint128 votes;
-}
-
-contract Election {
+    struct Candidate {
+        address candadr;
+        string name;
+        uint128 votes;
+    }
 
     address[] registry;
 
@@ -51,6 +52,7 @@ contract Election {
         require(block.timestamp >= startTime, "Voting has not started yet!!");
         require(block.timestamp <= endTime, "Voting has ended!");
 
+        // since we want the reference of the particular voter's struct
         Voter storage v = regdVoter[voterAddr];
 
         require(v.votaddr != address(0x0000000000000000000000000000000000000000));
@@ -68,7 +70,7 @@ contract Election {
         return true;
     }
 
-    function getVoterCount()public view returns(uint128){
+    function getVoterCount() public view returns(uint128){
         return voterCount;
     }
 
@@ -77,7 +79,8 @@ contract Election {
     }
 
     function getResult() public view returns(address, uint128){
-        address[] storage voterBox = registry;
+        // since we want to create a temp copy
+        address[] memory voterBox = registry;
 
         require(block.timestamp > endTime, "Voting is in progress. Results to be announced after it ends.");
         require(voterBox.length > 0, "No votes were casted.");
