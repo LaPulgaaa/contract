@@ -25,8 +25,8 @@ contract Election {
     uint128 candCount;
     mapping (address => Candidate) regdCand;
 
-    uint startTime;
-    uint endTime;
+    uint public startTime;
+    uint public endTime;
 
     constructor(uint _startTime, uint _endTime){
         voterCount = 0;
@@ -49,17 +49,17 @@ contract Election {
 
     function vote(address voterAddr, address candAddr) public returns(bool){
 
-        require(block.timestamp >= startTime, "Voting has not started yet!!");
-        require(block.timestamp <= endTime, "Voting has ended!");
+        require(block.timestamp*1000 > startTime, "Voting has not started yet!!");
+        require(block.timestamp*1000 <= endTime, "Voting has ended!");
 
         // since we want the reference of the particular voter's struct
         Voter storage v = regdVoter[voterAddr];
 
-        require(v.votaddr != address(0x0000000000000000000000000000000000000000));
+        require(v.votaddr != address(0x0000000000000000000000000000000000000000),"Voter not registered!");
         require(v.voted == false, "Address has already casted a vote");
 
         Candidate storage c = regdCand[candAddr];
-        require(c.candadr != address(0x0000000000000000000000000000000000000000));
+        require(c.candadr != address(0x0000000000000000000000000000000000000000), "No such candidate!");
 
         c.votes+=1;
         v.votedto = candAddr;
