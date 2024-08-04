@@ -78,7 +78,7 @@ contract Election {
         return candCount;
     }
 
-    function getResult() public view returns(address, uint128){
+    function getResult() public view returns(address, uint128, string memory){
         // since we want to create a temp copy
         address[] memory voterBox = registry;
 
@@ -103,7 +103,7 @@ contract Election {
             }
         }
 
-        return (leader, regdCand[leader].votes);
+        return (leader, regdCand[leader].votes, regdCand[leader].name);
 
     }
 }
